@@ -78,7 +78,7 @@ deviceAdd(d_c, d_a, d_b, np.int32(N), block = blockDim, grid = gridDim)
 end.record() 
 end.synchronize()
 secs = start.time_till(end) * 1e-3
-print("Processing time = ", secs, " seconds")
+print("Processing time = %fs" % (secs))
 
 
 # --- Copy results from device to host
