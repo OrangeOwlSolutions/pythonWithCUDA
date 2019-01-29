@@ -4,10 +4,20 @@ import pycuda.autoinit
 from pycuda.compiler import SourceModule
 import numpy as np
 
+###################
+# iDivUp FUNCTION #
+###################
 def iDivUp(a, b):
     return a // b + 1
 
-N = 10000
+########
+# MAIN #
+########
+
+start = cuda.Event()
+end   = cuda.Event()
+
+N = 100000
 
 BLOCKSIZE = 256
 
@@ -35,7 +45,12 @@ __global__ void deviceAdd(float * __restrict__ d_c, const float * __restrict__ d
 deviceAdd = mod.get_function("deviceAdd")
 blockDim  = (BLOCKSIZE, 1, 1)
 gridDim   = (iDivUp(N, BLOCKSIZE), 1, 1)
+start.record()
 deviceAdd(cuda.Out(h_c), cuda.In(h_a), cuda.In(h_b), np.int32(N), block = blockDim, grid = gridDim)
+end.record() 
+end.synchronize()
+secs = start.time_till(end) * 1e-3
+print("Processing time = %fs" % (secs))
 
 if np.array_equal(h_c, h_a + h_b):
   print("Test passed!")
