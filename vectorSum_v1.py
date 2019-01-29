@@ -37,7 +37,7 @@ listGPUs()
 start = cuda.Event()
 end   = cuda.Event()
 
-N = 10
+N = 100000
 
 BLOCKSIZE = 256
 
