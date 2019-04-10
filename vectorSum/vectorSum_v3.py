@@ -1,9 +1,9 @@
-# --- PyCuda initialization
+import numpy as np
+
+# --- PyCUDA initialization
 import pycuda.gpuarray as gpuarray
 import pycuda.driver as cuda
 import pycuda.autoinit
-from pycuda.compiler import SourceModule
-import numpy as np
 
 ########
 # MAIN #
@@ -13,8 +13,6 @@ start = cuda.Event()
 end   = cuda.Event()
 
 N = 100000
-
-BLOCKSIZE = 256
 
 # --- Create random vectorson the CPU
 h_a = np.random.randn(1, N)
@@ -41,3 +39,6 @@ if np.array_equal(h_c, h_a + h_b):
   print("Test passed!")
 else :
   print("Error!")
+
+# --- Flush context printf buffer
+cuda.Context.synchronize()
