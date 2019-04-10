@@ -10,29 +10,9 @@ import numpy as np
 def iDivUp(a, b):
     return a // b + 1
 
-###################
-# iDivUp FUNCTION #
-###################
-def listGPUs():
-  print(cuda.Device.count(), " device(s) found.")
-
-  for gpuID in range(cuda.Device.count()):
-    dev = cuda.Device(gpuID)
-    print("Device #%d: %s" % (gpuID, dev.name()))
-    print("  Compute Capability: %d.%d" % dev.compute_capability())
-    print("  Total Memory: %s KB" % (dev.total_memory()//(1024)))
-    atts = [(str(att), value)
-            for att, value in dev.get_attributes().items()]
-    atts.sort()
-    
-    for att, value in atts:
-        print("  %s: %s" % (att, value))
-
 ########
 # MAIN #
 ########
-
-listGPUs()
 
 start = cuda.Event()
 end   = cuda.Event()
@@ -65,7 +45,6 @@ mod = SourceModule("""
     const int tid = threadIdx.x + blockIdx.x * blockDim.x;
     if (tid >= N) return;
     d_c[tid] = d_a[tid] + d_b[tid];
-    //printf("tid %d; %f + %f = %f \\n", tid, d_a[tid], d_b[tid], d_c[tid]);
   } 
   """)
 
@@ -80,7 +59,6 @@ end.synchronize()
 secs = start.time_till(end) * 1e-3
 print("Processing time = %fs" % (secs))
 
-
 # --- Copy results from device to host
 h_c = np.empty_like(h_a)
 cuda.memcpy_dtoh(h_c, d_c)
@@ -90,5 +68,5 @@ if np.array_equal(h_c, h_a + h_b):
 else :
   print("Error!")
 
-# Flush context printf buffer
+# --- Flush context printf buffer
 cuda.Context.synchronize()
