@@ -1,9 +1,10 @@
-# --- PyCuda initialization
+import numpy as np
+
+# --- PyCUDA initialization
 import pycuda.driver as cuda
 import pycuda.autoinit
 from pycuda.compiler import SourceModule
 import pycuda.gpuarray as gpuarray
-import numpy as np
 
 ########
 # MAIN #
@@ -13,8 +14,6 @@ start = cuda.Event()
 end   = cuda.Event()
 
 N = 100000
-
-BLOCKSIZE = 256
 
 # --- Create random vectorson the CPU
 h_a = np.random.randn(1, N)
@@ -26,6 +25,7 @@ h_b = h_b.astype(np.float32)
 
 d_a = gpuarray.to_gpu(h_a)
 d_b = gpuarray.to_gpu(h_b)
+d_c = gpuarray.empty_like(d_a)
 
 from pycuda.elementwise import ElementwiseKernel
 lin_comb = ElementwiseKernel(
@@ -34,7 +34,6 @@ lin_comb = ElementwiseKernel(
         "linear_combination")
 
 start.record()
-d_c = gpuarray.empty_like(d_a)
 lin_comb(d_c, d_a, d_b, 2, 3)
 end.record() 
 end.synchronize()
@@ -48,3 +47,6 @@ if np.array_equal(h_c, 2 * h_a + 3 * h_b):
   print("Test passed!")
 else :
   print("Error!")
+
+# --- Flush context printf buffer
+cuda.Context.synchronize()
