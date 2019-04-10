@@ -40,3 +40,6 @@ if np.all(abs(h_c - (np.sqrt(np.abs(h_a)) + np.exp(h_b))) < 1e-5):
   print("Test passed!")
 else :
   print("Error!")
+
+# --- Flush context printf buffer
+cuda.Context.synchronize()
