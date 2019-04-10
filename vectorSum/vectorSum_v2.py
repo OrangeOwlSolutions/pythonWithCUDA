@@ -56,3 +56,6 @@ if np.array_equal(h_c, h_a + h_b):
   print("Test passed!")
 else :
   print("Error!")
+
+# --- Flush context printf buffer
+cuda.Context.synchronize()
