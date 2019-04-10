@@ -3,7 +3,6 @@ import numpy as np
 # --- PyCUDA initialization
 import pycuda.driver as cuda
 import pycuda.autoinit
-from pycuda.compiler import SourceModule
 import pycuda.gpuarray as gpuarray
 
 ########
