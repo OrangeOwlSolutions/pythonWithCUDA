@@ -13,7 +13,7 @@ import pycuda.cumath as cumath
 start = cuda.Event()
 end   = cuda.Event()
 
-N = 10
+N = 100000
 
 # --- Create random vectorson the CPU
 h_a = np.random.randn(1, N)
